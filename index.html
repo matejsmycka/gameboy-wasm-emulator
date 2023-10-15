@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+    <title>Gameboy WASM Emulator</title>
+    <style>
+      .emscripten {
+        padding-right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        width: 20%;
+      }
+    </style>
+  </head>
+  <body>
+    <figure id="spinner" style="overflow: visible">
+      <div class="spinner"></div>
+      <center style="margin-top: 0.5em"><strong>emscripten</strong></center>
+    </figure>
+    <div class="emscripten" id="status">Downloading...</div>
+    <div class="emscripten">
+      <progress hidden id="progress" max="100" value="0"></progress>
+    </div>
+    <div class="emscripten_border">
+      <canvas
+        class="emscripten"
+        id="canvas"
+        oncontextmenu="event.preventDefault()"
+        tabindex="-1"
+      ></canvas>
+    </div>
+    <script>
+      var statusElement = document.getElementById("status"),
+        progressElement = document.getElementById("progress"),
+        spinnerElement = document.getElementById("spinner"),
+        Module = {
+          print: (function () {
+            var e = document.getElementById("output");
+            return (
+              e && (e.value = ""),
+              function (t) {
+                arguments.length > 1 &&
+                  (t = Array.prototype.slice.call(arguments).join(" ")),
+                  console.log(t),
+                  e && ((e.value += t + "\n"), (e.scrollTop = e.scrollHeight));
+              }
+            );
+          })(),
+          canvas: (() => {
+            var e = document.getElementById("canvas");
+            return (
+              e.addEventListener(
+                "webglcontextlost",
+                (e) => {
+                  alert(
+                    "WebGL context lost. You will need to reload the page."
+                  ),
+                    e.preventDefault();
+                },
+                !1
+              ),
+              e
+            );
+          })(),
+          setStatus: (e) => {
+            if (
+              (Module.setStatus.last ||
+                (Module.setStatus.last = { time: Date.now(), text: "" }),
+              e !== Module.setStatus.last.text)
+            ) {
+              var t = e.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/),
+                n = Date.now();
+              (t && n - Module.setStatus.last.time < 30) ||
+                ((Module.setStatus.last.time = n),
+                (Module.setStatus.last.text = e),
+                t
+                  ? ((e = t[1]),
+                    (progressElement.value = 100 * parseInt(t[2])),
+                    (progressElement.max = 100 * parseInt(t[4])),
+                    (progressElement.hidden = !1),
+                    (spinnerElement.hidden = !1))
+                  : ((progressElement.value = null),
+                    (progressElement.max = null),
+                    (progressElement.hidden = !0),
+                    e || (spinnerElement.hidden = !0)),
+                (statusElement.innerHTML = e));
+            }
+          },
+          totalDependencies: 0,
+          monitorRunDependencies: (e) => {
+            (this.totalDependencies = Math.max(this.totalDependencies, e)),
+              Module.setStatus(
+                e
+                  ? "Preparing... (" +
+                      (this.totalDependencies - e) +
+                      "/" +
+                      this.totalDependencies +
+                      ")"
+                  : "All downloads complete."
+              );
+          },
+        };
+      Module.setStatus("Downloading..."),
+        (window.onerror = () => {
+          Module.setStatus("Exception thrown, see JavaScript console"),
+            (spinnerElement.style.display = "none"),
+            (Module.setStatus = (e) => {
+              e && console.error("[post-exception status] " + e);
+            });
+        });
+    </script>
+    <script async src="index.js"></script>
+  </body>
+</html>
