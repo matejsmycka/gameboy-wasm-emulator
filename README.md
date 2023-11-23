@@ -1,9 +1,10 @@
 # Gameboy Pokemon WASM Emulator
 
-This is gameboy emulator written [1] in C, ported, modified and compiled to WebAssembly.
+This is a Gameboy emulator[1] written by David Jolly in C.
+I ported, modified, and compiled it to WebAssembly.
 
-Pokemon Red ROM is included in the repository, bundled as a `xdd` output file.
-I had to modify the emulator to load in-compile time instead of reading it from a file, which is not possible in `WASM` runtime. I tried using `Raylib` for rendering, but even with native compilation, I was not able to get it working. I switched to `SDL2`. The `emcc` supports it both, and I found it easier to understand.
+Pokemon Red ROM is included in the repository, bundled as an `xxd` output file.
+I had to modify the emulator to load in-compile time instead of reading it from a file, which is impossible in `WASM` runtime. I tried using `Raylib` for rendering, but even with native compilation, I could not get it working. I switched to `SDL2`. The `emcc` supports it both, making it easier to understand.
 
 ## Controls
 
@@ -18,7 +19,7 @@ I had to modify the emulator to load in-compile time instead of reading it from 
 - sdl2
 - libc
 - glib2
-- emscripten SDK with functional environment
+- emscripten SDK with a functional environment
 - emscripten compiler
 
 ## Build
@@ -30,14 +31,14 @@ python3 -m http.server
 
 ## Disclaimer
 
-This project is POC and many features are not implemented.
+This project is POC, and many features are not implemented.
 Missing features:
 
 - Sound
 - Save/Load
-- Screen could be bigger.
-- Add PokemonRed.gb to the wasm environment, no as array of bytes.
-- Optimize memory and cpu resources.
+- The screen could be bigger.
+- Add PokemonRed.gb to the wasm environment, not as an array of bytes.
+- Optimize memory and CPU resources.
 - Code quality
 
 ## Sources
