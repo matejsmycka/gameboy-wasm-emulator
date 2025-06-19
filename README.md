@@ -3,8 +3,6 @@
 This is a Gameboy emulator[1] written by David Jolly in C.
 I ported, modified, and compiled it to WebAssembly.
 
-Check it out: https://525073.gitlab-pages.ics.muni.cz/wasm-pokemon/
-
 Pokemon Red ROM is included in the repository, bundled as an `xxd` output file.
 I had to modify the emulator to load in-compile time instead of reading it from a file, which is impossible in `WASM` runtime. I tried using `Raylib` for rendering, but even with native compilation, I could not get it working. I switched to `SDL2`. The `emcc` supports it both, making it easier to understand.
 
